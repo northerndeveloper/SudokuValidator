@@ -1,0 +1,1 @@
+java -jar sudokuvalidator-1.0.0.jar puzzleName.txt
