@@ -33,7 +33,9 @@ public class SudokuValidatorApplication {
         }
 
         SpringApplication.run(SudokuValidatorApplication.class, args);
-        System.out.println("Validation Result of Sudoku File  = " + sudokuValidatorService.readFileAndValidateSudokuFile(args[0]));
+        int validationResult = sudokuValidatorService.readFileAndValidateSudokuFile(args[0]);
+        logger.info("Validation Result of Sudoku File  = " + validationResult);
+        System.out.println("Validation Result of Sudoku File  = " + validationResult);
     }
 
 }
