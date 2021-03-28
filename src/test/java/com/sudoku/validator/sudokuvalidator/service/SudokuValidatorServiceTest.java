@@ -21,14 +21,14 @@ class SudokuValidatorServiceTest {
     @Test
     public void testReadFileAndValidateItSuccessful() throws SudokuValidatorServiceException, IOException, CsvException {
 
-        int validateResult = sudokuValidatorService.readFileAndValidateSudokuFile("src/test/resources/puzzleNameProperFile.txt");
+        int validateResult = sudokuValidatorService.readFileAndValidateSudokuFile("src/test/resources/sudokuPuzzleProperFile.txt");
         assertEquals(0, validateResult);
     }
 
     @Test
     public void testReadFileAndValidateItFail() throws SudokuValidatorServiceException, IOException, CsvException {
 
-        int validateResult = sudokuValidatorService.readFileAndValidateSudokuFile("src/test/resources/puzzleNameNonProperFile.txt");
+        int validateResult = sudokuValidatorService.readFileAndValidateSudokuFile("src/test/resources/sudoPuzzleNonProperFile.txt");
         assertEquals(-1, validateResult);
     }
 
@@ -99,7 +99,7 @@ class SudokuValidatorServiceTest {
     @Test
     public void testSudokuTableFromSudokuFileSuccessWithAProperFile() throws SudokuValidatorServiceException, IOException, CsvException {
 
-        File file = new File("src/test/resources/puzzleNameProperFile.txt");
+        File file = new File("src/test/resources/sudokuPuzzleProperFile.txt");
 
         int[][] sudokuTable = new int[][] { {4,3,5,2,6,9,7,8,1},
                 {6,8,2,5,7,1,4,9,3},
