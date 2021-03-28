@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,6 +20,8 @@ import java.util.List;
 public class SudokuValidatorService {
 
     private static final Logger logger = LogManager.getLogger(SudokuValidatorService.class);
+
+    private static final int SUDOKU_BOARD_SIZE = 9;
 
 
     /**
@@ -40,57 +41,41 @@ public class SudokuValidatorService {
             logger.error(fileName + " does not exist. Please correct fileName and try again");
             throw new SudokuValidatorServiceException(fileName + " does not exist. Please correct fileName and try again");
         }
-        String[][] readedListFromCSV = generateArrayListFromFile(file);
+        int[][] sudokuTable = generateArrayListFromFile(file);
         logger.debug(" readFileAndValidateIt method is ended properly");
-        return validateSudoku(readedListFromCSV);
+        return validateSudokuMain(sudokuTable);
     }
 
     /**
      * Validates Sudoku numbers which is received from the File
      * Converts every line into Int array , Sort them and finally validate them
      *
-     * @param numbers
+     * @param sudokuTable
      * @return
      */
-    private int validateSudoku(String[][] numbers) throws SudokuValidatorServiceException {
+    private int validateSudokuMain(int[][] sudokuTable) throws SudokuValidatorServiceException {   //TODO
 
-        logger.debug(" validateSudoku method is called.Numbers size of the sudoku file list " + numbers.length);
+        logger.debug(" validateSudoku method is called.Numbers size of the sudoku file list " + sudokuTable.length);
 
-        if (numbers.length == 0) {
+        if (sudokuTable.length == 0) {
             logger.error("numbers in the CSV path can not be null");
             throw new SudokuValidatorServiceException("numbers in the CSV path can not be null");
         }
 
-        if (numbers.length != 9) {
+        if (sudokuTable.length != 9) {
             logger.error("A proper Sudoku File should consist from 9 line");
             throw new SudokuValidatorServiceException("A proper Sudoku File should consist from 9 line");
         }
+        // TODO check for validation
+     /*   if (!checkSudokuLinesAreValid(numbers[i])) {
+            logger.error("A proper Sudoku File should consist numbers from 1 to 9 ! Not other numbers ! Please" +
+                    "correct your sudoku file");
+            throw new SudokuValidatorServiceException("A proper Sudoku File should consist numbers from 1 to 9 ! Not other numbers ! Please" +
+                    " correct your sudoku file");
+        }*/
 
-
-        for (int i = 0; i < numbers.length; i++) {
-
-            if (numbers[i].length != 9) {
-                logger.error("A proper Sudoku File should consist from 9 line");
-                throw new SudokuValidatorServiceException("A proper Sudoku File should consist from 9 line");
-            }
-
-            Arrays.sort(numbers[i]);
-
-            if (!checkSudokuLinesAreValid(numbers[i])) {
-                logger.error("A proper Sudoku File should consist numbers from 1 to 9 ! Not other numbers ! Please" +
-                        "correct your sudoku file");
-                throw new SudokuValidatorServiceException("A proper Sudoku File should consist numbers from 1 to 9 ! Not other numbers ! Please" +
-                        " correct your sudoku file");
-            }
-
-            Arrays.sort(numbers, new ColumnComparator(i, SortingOrder.ASCENDING));
-            for (int j = 0; j < numbers[i].length; j++) {
-                if ( !( numbers[i][j].equals(String.valueOf(j + 1))) ) {
-                    logger.info(" Sudoku is not validated correctly. Please correct your sudoku numbers in order to valdiate it. The problemed line "
-                            + i + " column is " + j);
-                    return -1;
-                }
-            }
+        if (!checkSudokuStatus(sudokuTable)) {
+            return -1;
         }
 
 
@@ -108,7 +93,7 @@ public class SudokuValidatorService {
      * @throws IOException
      * @throws CsvException
      */
-    private String[][] generateArrayListFromFile(File file) throws IOException, CsvException {
+    private int[][] generateArrayListFromFile(File file) throws IOException, CsvException {
 
         logger.debug(" generateArrayListFromFile method is called.File Name is " + file.getName() + " .Absolute file" +
                 "path is " + file.getAbsolutePath());
@@ -116,49 +101,49 @@ public class SudokuValidatorService {
         CSVReader reader = new CSVReader(new FileReader(file.getAbsolutePath()));
         List<String[]> readedListFromCSV = reader.readAll();
 
+
         String[][] readedListArray = new String[readedListFromCSV.size()][];
+        int[][] sudokuListIntArray = new int[9][9];
         readedListArray = readedListFromCSV.toArray(readedListArray);
 
-        logger.debug(" generateArrayListFromFile method is ended properly");
+        for (int i = 0; i < readedListArray.length; i++)  //TODO to be discussed
+        {
+            for (int j = 0; j < readedListArray[i].length; j++) {
+                sudokuListIntArray[i][j] = Integer.parseInt(readedListArray[i][j]);
 
-        return readedListArray;
+            }
+        }
+
+
+        logger.debug(" generateArrayListFromFile method is ended properly");
+        return sudokuListIntArray;
     }
 
-    /**
-     * Checks if sudoku lines are valid or not
-     *
-     * @param sudokuStrLine
-     * @return
-     */
-    private boolean checkSudokuLinesAreValid(String[] sudokuStrLine) {
+    private boolean checkSudokuStatus(int[][] grid) {
+        for (int i = 0; i < 9; i++) {
 
-        String[] properSudokuNumbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+            int[] row = new int[9];
+            int[] square = new int[9];
+            int[] column = grid[i].clone();
 
-        if (!Arrays.equals(properSudokuNumbers, sudokuStrLine)) {
-            return false;
+            for (int j = 0; j < 9; j++) {
+                row[j] = grid[j][i];
+                square[j] = grid[(i / 3) * 3 + j / 3][i * 3 % 9 + j % 3];
+            }
+            if (!(validate(column) && validate(row) && validate(square)))
+                return false;
         }
         return true;
     }
 
-
-    private static void sortbyColumn(String arr[][], int col)
-    {
-        // Using built-in sort function Arrays.sort
-        Arrays.sort(arr, new Comparator<String[]>() {
-
-            @Override
-            // Compare values according to columns
-            public int compare(String[] entry1,
-                               String[] entry2) {
-
-                // To sort in descending order revert
-                // the '>' Operator
-                if (Integer.parseInt(entry1[col]) > Integer.parseInt(entry2[col]))
-                    return 1;
-                else
-                    return -1;
-            }
-        });  // End of function call sort().
+    private boolean validate(int[] check) {
+        int i = 0;
+        Arrays.sort(check);
+        for (int number : check) {
+            if (number != ++i)
+                return false;
+        }
+        return true;
     }
 
 
