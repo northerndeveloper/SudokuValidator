@@ -27,13 +27,13 @@ public class SudokuValidatorApplication {
 
     public static void main(String[] args) throws IOException, CsvException, SudokuValidatorApplicationException, SudokuValidatorServiceException {
 
-        if(args == null || args.length == 0) {
+        if (args == null || args.length == 0) {
             logger.error("there should be at least one argument which gives the sudoku puzzle");
             throw new SudokuValidatorApplicationException("there should be at least one argument which gives the sudoku puzzle");
         }
 
         SpringApplication.run(SudokuValidatorApplication.class, args);
-        System.out.println("Validation Result of Sudoku File  = "   + sudokuValidatorService.readFileAndValidateSudokuFile(args[0]));
+        System.out.println("Validation Result of Sudoku File  = " + sudokuValidatorService.readFileAndValidateSudokuFile(args[0]));
     }
 
 }

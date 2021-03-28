@@ -23,7 +23,6 @@ public class SudokuValidatorService {
 
     private static final int SUDOKU_BOARD_SIZE = 9;
 
-
     /**
      * Reads the file given by the user and validates if it meets proper sudoku file conditions
      *
@@ -97,17 +96,17 @@ public class SudokuValidatorService {
         int[][] sudokuListIntArray = new int[9][9];
         readedListArray = readedListFromCSV.toArray(readedListArray);
 
-        if(readedListArray.length != 9 ){
+        if (readedListArray.length != 9) {
             logger.error("A Proper sudoku line should consist from 9 line.No more or less");
             throw new SudokuValidatorServiceException("A Proper sudoku line should consist from 9 line.No more or less");
         }
 
         for (int i = 0; i < readedListArray.length; i++) {
             for (int j = 0; j < readedListArray[i].length; j++) {
-                if(!Character.isDigit(readedListArray[i][j].charAt(0))){
-                    logger.error("Input file should consist of digits ! Not any character !. Problem line is " +  i +
+                if (!Character.isDigit(readedListArray[i][j].charAt(0))) {
+                    logger.error("Input file should consist of digits ! Not any character !. Problem line is " + i +
                             " problem column is " + j);
-                    throw new SudokuValidatorServiceException("Input file should consist of digits ! Not any character !. Problem line is " +  i +
+                    throw new SudokuValidatorServiceException("Input file should consist of digits ! Not any character !. Problem line is " + i +
                             " problem column is " + j);
 
                 }
@@ -136,13 +135,13 @@ public class SudokuValidatorService {
 
             for (int j = 0; j < SUDOKU_BOARD_SIZE; j++) {
                 row[j] = sudokuTable[j][i];
-                square[j] = sudokuTable[(i / 3) * 3 + j / 3] [i * 3 % SUDOKU_BOARD_SIZE + j % 3];
+                square[j] = sudokuTable[(i / 3) * 3 + j / 3][i * 3 % SUDOKU_BOARD_SIZE + j % 3];
             }
             if (!(validate(column) && validate(row) && validate(square))) {
                 logger.error("Validation at failed at row = " + row + " column " + column + " Please check those row" +
                         "and columns and correct it.");
-                 System.out.println("Validation at failed at row = " + row + " column " + column + " Please check those row" +
-                    "and columns and correct it.");
+                System.out.println("Validation at failed at row = " + row + " column " + column + " Please check those row" +
+                        "and columns and correct it.");
                 return false;
             }
         }
