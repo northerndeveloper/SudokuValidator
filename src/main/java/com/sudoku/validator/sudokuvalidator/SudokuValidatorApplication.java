@@ -28,8 +28,8 @@ public class SudokuValidatorApplication {
     public static void main(String[] args) throws IOException, CsvException, SudokuValidatorApplicationException, SudokuValidatorServiceException {
 
         if(args == null || args.length == 0) {
-            logger.error("there should be at least one argulment which gives the sudoku puzzle");
-            throw new SudokuValidatorApplicationException("there should be at least one argulment which gives the sudoku puzzle");
+            logger.error("there should be at least one argument which gives the sudoku puzzle");
+            throw new SudokuValidatorApplicationException("there should be at least one argument which gives the sudoku puzzle");
         }
 
         SpringApplication.run(SudokuValidatorApplication.class, args);
